@@ -63,11 +63,23 @@ resource "azurerm_mysql_flexible_server_configuration" "ssl_config" {
   value               = "OFF"
 }
 
-resource "azurerm_mysql_flexible_server_firewall_rule" "allow_azure_services" {
-  name                = "allow-azure-services"
-  resource_group_name = var.rg_name
-  server_name         = azurerm_mysql_flexible_server.serverformation1.name
-  start_ip_address    = "0.0.0.0"
-  end_ip_address      = "0.0.0.0"
+# Create MySQL database 
+resource "azurerm_mysql_flexible_database" "mysqldb1" { 
+ name    =  "mysqldb1-iac" 
+ resource_group_name =  var.rg_name
+ server_name   =  azurerm_mysql_flexible_server.serverformation1.name
+ charset    =  "utf8" 
+ collation    =  "utf8_unicode_ci" 
+ depends_on = [ azurerm_mysql_flexible_server.serverformation1 ] 
+} 
+# Configure firewall to open access 
+resource "azurerm_mysql_flexible_server_firewall_rule" "mysqlfwrule1" { 
+ name        =  "mysqlfwrule1-iac" 
+ resource_group_name =  var.rg_name
+ server_name     =  azurerm_mysql_flexible_server.serverformation1.name 
+ start_ip_address  =  "0.0.0.0"
+ end_ip_address   =  "255.255.255.255" 
+ depends_on = [ azurerm_mysql_flexible_server.serverformation1, 
+ azurerm_mysql_flexible_database.mysqldb1 ] 
 }
 
