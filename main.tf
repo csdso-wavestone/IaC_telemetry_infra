@@ -62,3 +62,12 @@ resource "azurerm_mysql_flexible_server_configuration" "ssl_config" {
   server_name         = azurerm_mysql_flexible_server.serverformation1.name
   value               = "OFF"
 }
+
+resource "azurerm_mysql_flexible_server_firewall_rule" "allow_azure_services" {
+  name                = "allow-azure-services"
+  resource_group_name = var.rg_name
+  server_name         = azurerm_mysql_flexible_server.serverformation1.name
+  start_ip_address    = "0.0.0.0"
+  end_ip_address      = "0.0.0.0"
+}
+
