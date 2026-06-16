@@ -6,6 +6,22 @@ provider "azurerm" {
 } 
 
 # Create Storage Account 
+resource "azurerm_storage_account" "sg1" { 
+ name      =  "otstorageaccountunique" 
+ resource_group_name   =  var.rg_name
+ location     =  var.location
+ account_tier    =  "Standard" 
+ account_replication_type =  "LRS" 
+ allow_nested_items_to_be_public = true 
+} 
+
+# Create a Blob inside the Storage Account
+resource "azurerm_storage_container" "newcontainer1" { 
+ name     =  "container-json" 
+ storage_account_id =  azurerm_storage_account.sg1.id
+ container_access_type =  "blob" 
+} 
+
 resource "azurerm_storage_account" "sg2" { 
  name      =  "csestologsunique" 
  resource_group_name   =  var.rg_name
